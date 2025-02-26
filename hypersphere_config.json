@@ -1,0 +1,11 @@
+{
+    "resolution": [1920, 1080],
+    "framerate": 60,
+    "duration": 60,
+    "point_count": 125000,
+    "color_depth": 8,
+    "color_gradient": {
+        "low": [0, 160, 200],
+        "high": [200, 0, 160]
+    }
+}
