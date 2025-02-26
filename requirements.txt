@@ -1,0 +1,7 @@
+librosa==0.10.1
+numpy==1.21.5
+psutil==7.0.0
+pygame==2.5.2
+PyOpenGL==3.1.7
+PyOpenGL==3.1.9
+scipy==1.8.0
