@@ -494,7 +494,7 @@ class HyperspherePipeline:
         
         return points_4d
 
-    def generate_animation_frames(self, output_dir='/mnt/d/hypersphere_frames'):
+    def generate_animation_frames(self, output_dir='./hypersphere_frames'):
         """Generate animation frames in batches with progress tracking"""
         try:
             # Total frames calculation
@@ -598,7 +598,7 @@ def main():
     parser = argparse.ArgumentParser(description='Generate 4D hypersphere animation with beat detection')
     parser.add_argument('--audio', '-a', help='Path to audio file (WAV) for beat detection')
     parser.add_argument('--config', '-c', default='hypersphere_config.json', help='Path to config file')
-    parser.add_argument('--output', '-o', default='/mnt/d/hypersphere_frames', help='Output directory for frames')
+    parser.add_argument('--output', '-o', default='./hypersphere_frames', help='Output directory for frames')
     parser.add_argument('--batch-size', '-b', type=int, help='Override batch size for frame processing')
     parser.add_argument('--threads', '-t', type=int, help='Override number of processing threads')
     parser.add_argument('--verbose', '-v', action='store_true', help='Enable verbose logging')
