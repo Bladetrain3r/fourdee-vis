@@ -6,7 +6,6 @@ This document provides a comprehensive overview of the 4D Hypersphere Visualizat
 
 The visualization system consists of two main scripts:
 1. **`generate_4d_sphere_v5_audio_opt.py`** - Main rendering script for creating visualization frames
-2. **Encoder script** - Combines frames with audio into a high-quality video
 
 ## Configuration Options
 
@@ -169,14 +168,6 @@ python generate_4d_sphere_v5_audio_opt.py --audio music.wav --config hypersphere
 | `--batch-size` / `-b` | Override batch size for processing |
 | `--threads` / `-t` | Override thread count |
 | `--verbose` / `-v` | Enable verbose logging |
-
-## Video Encoding
-
-After rendering frames, encode them with the audio file:
-
-```bash
-python encode_video.py --input /path/to/frames --output final_video.mkv --audio music.wav --config hypersphere_config.json --quality 20 --preset medium
-```
 
 ## Troubleshooting
 
