@@ -80,7 +80,8 @@ class BeatDetector:
             return []
         
         # Calculate total frames based on duration and fps
-        total_frames = int(self.duration * fps)
+        # Add a small buffer to ensure enough memory
+        total_frames = int(self.duration * fps) + 10  # Add buffer frames
         
         # Initialize zoom envelope with base value
         zoom_envelope = np.ones(total_frames) * 2.0  # Base zoom factor
@@ -293,18 +294,22 @@ class HyperspherePipeline:
             existing_shm = shared_memory.SharedMemory(name=points_shm_name)
             points_4d = np.ndarray((point_count, 4), dtype=np.float32, buffer=existing_shm.buf)
             
+            # Set default zoom factor
+            zoom_factor = 2.0  # Default value when no audio is used
+            
             # Access shared memory for zoom envelope if available
             if zoom_shm_name:
                 zoom_shm = shared_memory.SharedMemory(name=zoom_shm_name)
-                total_frames = framerate * duration
-                zoom_envelope = np.ndarray((total_frames,), dtype=np.float64, buffer=zoom_shm.buf)
-                # Get zoom factor for current frame
-                zoom_factor = zoom_envelope[frame] if frame < len(zoom_envelope) else 2.0
-            else:
-                # Default static zoom behavior if no zoom envelope
-                # Change to a flat zoom factor for testing
-                # Different minimum and maximum zoom factors can be used
-                zoom_factor = 2
+                
+                # Get size of the shared memory buffer in terms of float64 items
+                buffer_size = len(zoom_shm.buf) // np.dtype(np.float64).itemsize
+                
+                # Create the array using the actual buffer size
+                zoom_envelope = np.ndarray((buffer_size,), dtype=np.float64, buffer=zoom_shm.buf)
+                
+                # Get zoom factor for current frame with safe indexing
+                if frame < buffer_size:
+                    zoom_factor = zoom_envelope[frame]
             
             # Initialize pygame for this process
             os.environ['SDL_VIDEO_WINDOW_POS'] = '0,0'  # Position window to reduce flicker
@@ -444,7 +449,7 @@ class HyperspherePipeline:
 
         # Static projection factor
         total_frames = framerate * duration
-        factor = 1  # Static factor as per your modification
+        factor = 1.25  # Static factor as per your modification
         
         # Apply projection (vectorized)
         points_3d = np.column_stack([
@@ -494,7 +499,7 @@ class HyperspherePipeline:
         
         return points_4d
 
-    def generate_animation_frames(self, output_dir='./hypersphere_frames'):
+    def generate_animation_frames(self, output_dir='/mnt/d/hypersphere_frames'):
         """Generate animation frames in batches with progress tracking"""
         try:
             # Total frames calculation
@@ -598,7 +603,7 @@ def main():
     parser = argparse.ArgumentParser(description='Generate 4D hypersphere animation with beat detection')
     parser.add_argument('--audio', '-a', help='Path to audio file (WAV) for beat detection')
     parser.add_argument('--config', '-c', default='hypersphere_config.json', help='Path to config file')
-    parser.add_argument('--output', '-o', default='./hypersphere_frames', help='Output directory for frames')
+    parser.add_argument('--output', '-o', default='/mnt/d/hypersphere_frames', help='Output directory for frames')
     parser.add_argument('--batch-size', '-b', type=int, help='Override batch size for frame processing')
     parser.add_argument('--threads', '-t', type=int, help='Override number of processing threads')
     parser.add_argument('--verbose', '-v', action='store_true', help='Enable verbose logging')
